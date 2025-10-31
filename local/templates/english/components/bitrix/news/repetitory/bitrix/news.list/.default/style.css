@@ -1,0 +1,47 @@
+.repetitory {
+    margin-bottom: var(--section-margin-bottom);
+}
+
+.repetitory-content .items-container {
+    display: grid;
+    gap: 20px;
+    grid-template-columns: repeat(auto-fit, minmax(310px, 1fr));
+    place-items: center;
+}
+
+.repetitory-content .item {
+    padding: 10px;
+    border-radius: 32px;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.repetitory-content .item .btn {
+    display: block;
+    cursor: pointer;
+    margin: 0 auto;
+}
+
+.repetitory-content .item .btn:hover {
+    color: var(--color-white);
+}
+
+.btn-more {
+    display: block;
+    margin: 0 auto;
+}
+
+.teachers-about {
+    margin-bottom: 10px;
+    flex: 1 1;
+}
+
+.teachers-about ul li {
+    text-align: center;
+    color: #8C94A8;
+}
+
+.teachers-about ul li:not(:last-child) {
+    margin-bottom: 5px;
+}

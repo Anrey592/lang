@@ -1,0 +1,103 @@
+/* Стили для хлебных крошек */
+.breadcrumb {
+    margin: 20px auto 30px;
+    padding: 0 10px;
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.bx-breadcrumb-item {
+    display: inline-flex;
+    align-items: center;
+    font-size: var(--font-size-14);
+    color: #8C94A8;
+}
+
+.bx-breadcrumb-item:not(:first-child) {
+    margin-left: 8px;
+}
+
+.bx-breadcrumb-item i.fa-angle-right {
+    margin-right: 8px;
+    color: #8C94A8;
+    font-size: var(--font-size-16);
+}
+
+.bx-breadcrumb-item a {
+    color: #8C94A8;
+    text-decoration: none;
+    transition: color var(--time-trans) ease;
+    font-weight: 500;
+}
+
+.bx-breadcrumb-item a:hover span {
+    color: var(--color-accent);
+}
+
+.bx-breadcrumb-item span {
+    color: var(--color-black);
+    font-weight: 500;
+}
+
+/* Адаптивность */
+@media (min-width: 768px) {
+    .breadcrumb {
+        margin: 30px auto 40px;
+    }
+
+    .bx-breadcrumb-item {
+        font-size: var(--font-size-15);
+    }
+}
+
+@media (min-width: 1200px) {
+    .breadcrumb {
+        margin: 40px auto 50px;
+    }
+
+    .bx-breadcrumb-item {
+        font-size: var(--font-size-16);
+    }
+}
+
+/* Альтернативный вариант с кастомными стрелками (если не используется FontAwesome) */
+.bx-breadcrumb-item:not(:first-child)::before {
+    content: '';
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    margin-right: 8px;
+    background-image: url("data:image/svg+xml,%3Csvg width='16' height='16' viewBox='0 0 16 16' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M6 12L10 8L6 4' stroke='%238C94A8' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: center;
+}
+
+.bx-breadcrumb-item:first-child::before {
+    display: none;
+}
+
+/* Компактный вариант */
+.breadcrumb.compact {
+    margin: 10px auto 20px;
+}
+
+.breadcrumb.compact .bx-breadcrumb-item {
+    font-size: var(--font-size-12);
+}
+
+/* Стили для личного кабинета с хлебными крошками */
+.personal .breadcrumb {
+    margin: 0 auto 30px;
+    padding: 0;
+}
+
+.personal-content .breadcrumb {
+    margin-bottom: 24px;
+}
+
+/* Минимальная высота для контейнера */
+.breadcrumb-container {
+    min-height: 30px;
+    display: flex;
+    align-items: center;
+}

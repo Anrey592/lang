@@ -1,0 +1,214 @@
+.auth-page {
+    max-width: 400px;
+    margin: 0 auto var(--section-margin-bottom);
+    padding: 30px 20px;
+}
+
+.auth-page-content {
+    background: var(--color-bg1);
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    border: 1px solid #e0e0e0;
+}
+
+.auth-page h3 {
+    text-align: center;
+    margin-bottom: 25px;
+    color: var(--color-black);
+    font-size: 24px;
+    font-weight: 600;
+}
+
+.auth-page .form-group {
+    margin-bottom: 20px;
+}
+
+.auth-page .form-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 500;
+    color: var(--color-black);
+}
+
+.auth-page .form-group input {
+    width: 100%;
+    padding: 12px 15px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    font-size: var(--font-size-16);
+    transition: border-color var(--time-trans) ease;
+    box-sizing: border-box;
+}
+
+.auth-page .form-group input:focus {
+    outline: none;
+    border-color: var(--color-accent);
+    box-shadow: 0 0 0 2px rgba(123, 97, 255, 0.25);
+}
+
+#authPageForm .btn-primary {
+    width: 100%;
+}
+
+.auth-page-links {
+    margin-top: 20px;
+    text-align: center;
+}
+
+.auth-page .register-link {
+    color: var(--color-accent);
+    text-decoration: none;
+    font-size: var(--font-size-14);
+    transition: color var(--time-trans) ease;
+}
+
+.auth-page .register-link:hover {
+    color: #6a2cb8;
+    text-decoration: underline;
+}
+
+.auth-page .policies-container {
+    margin-top: 20px;
+    padding: 15px;
+    background: var(--color-bg1);
+    border-radius: 8px;
+    border: 1px solid #e0e0e0;
+}
+
+.auth-page .policy-checkbox {
+    margin-bottom: 12px;
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+}
+
+.auth-page .policy-input {
+    margin-top: 3px;
+    flex-shrink: 0;
+}
+
+.auth-page .policy-label {
+    font-size: var(--font-size-14);
+    line-height: 1.4;
+    color: var(--color-black);
+    cursor: pointer;
+    text-align: start;
+}
+
+.auth-page .policy-link {
+    color: var(--color-accent);
+    text-decoration: underline;
+    transition: color var(--time-trans) ease;
+}
+
+.auth-page .policy-link:hover {
+    color: #6a2cb8;
+}
+
+.auth-page .btn-telegram {
+    width: 100%;
+    margin-top: 10px;
+    background: #0088cc;
+    color: white;
+    border: none;
+    padding: 12px;
+    border-radius: 6px;
+    font-size: var(--font-size-16);
+    cursor: pointer;
+    transition: all var(--time-trans) ease;
+}
+
+.auth-page .btn-telegram:hover:not(:disabled) {
+    background: #0077b3;
+    transform: translateY(-1px);
+}
+
+.auth-page .btn-telegram:disabled {
+    background: #cccccc;
+    cursor: not-allowed;
+    transform: none;
+}
+
+.auth-page .message {
+    margin-top: 15px;
+    padding: 10px 15px;
+    border-radius: 6px;
+    display: none;
+    font-size: var(--font-size-14);
+}
+
+.auth-page .message.success {
+    background: #d4edda;
+    color: #155724;
+    border: 1px solid #c3e6cb;
+}
+
+.auth-page .message.error {
+    background: #f8d7da;
+    color: #721c24;
+    border: 1px solid #f5c6cb;
+}
+
+.auth-page .message.info {
+    background: #d1ecf1;
+    color: #0c5460;
+    border: 1px solid #bee5eb;
+}
+
+@media (max-width: 767px) {
+    .auth-page .policy-label {
+        font-size: var(--font-size-12);
+    }
+
+    .auth-page .policies-container {
+        padding: 12px;
+    }
+}
+
+@media (max-width: 480px) {
+    .auth-page {
+        padding: 20px 15px;
+    }
+
+    .auth-page-content {
+        padding: 20px;
+    }
+
+    .auth-page h3 {
+        font-size: 20px;
+    }
+
+    .auth-page .form-group input {
+        padding: 10px 12px;
+        font-size: var(--font-size-14);
+    }
+}
+
+.password-field {
+    position: relative;
+}
+
+.password-toggle {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    width: 20px;
+    height: 20px;
+    opacity: 0.6;
+    transition: opacity var(--time-trans) ease;
+}
+
+.password-toggle:hover {
+    opacity: 1;
+}
+
+.password-toggle svg {
+    width: 100%;
+    height: 100%;
+}

@@ -1,0 +1,49 @@
+User-agent: *
+Disallow: /bitrix/
+Disallow: /auth/
+Disallow: /personal/
+Disallow: /search/
+Disallow: /upload/
+Disallow: /admin/
+Disallow: /cart/
+Disallow: /order/
+Disallow: /*?login=yes
+Disallow: /*?logout=yes
+Disallow: /*?register=yes
+Disallow: /*?forgot_password=yes
+Disallow: /*?change_password=yes
+Disallow: /*?backurl_admin=
+Disallow: /*?print=
+Disallow: /*?print_course=
+Disallow: /*?ACTION=
+Disallow: /*?arrFilter_
+Disallow: /*?PAGEN_
+Disallow: /*?SHOWALL_
+Disallow: /*?show_all=
+Disallow: /*?sort=
+Disallow: /*?ORDER=
+Allow: /upload/resize_cache/
+Allow: /upload/iblock/
+
+User-agent: Yandex
+Disallow: /bitrix/
+Disallow: /auth/
+Disallow: /personal/
+Disallow: /search/
+Disallow: /upload/
+Disallow: /admin/
+Clean-param: utm_source&utm_medium&utm_campaign&utm_term&utm_content /
+Clean-param: from&gclid&yclid&openstat /
+
+User-agent: Googlebot
+Allow: /upload/resize_cache/
+Allow: /upload/iblock/
+Disallow: /bitrix/
+Disallow: /auth/
+Disallow: /personal/
+Disallow: /search/
+Disallow: /upload/
+Disallow: /admin/
+
+Host: https://multy-lang.ru
+Sitemap: https://multy-lang.ru/sitemap.xml

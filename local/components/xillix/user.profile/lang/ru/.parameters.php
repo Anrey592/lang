@@ -1,0 +1,25 @@
+<?php
+
+$MESS['XILLIX_USER_PROFILE_PARAM_FIELDS'] = 'Поля для отображения';
+$MESS['XILLIX_USER_PROFILE_PARAM_FIELDS_DESC'] = 'Выберите основные поля пользователя для отображения';
+$MESS['XILLIX_USER_PROFILE_PARAM_UF_FIELDS'] = 'Дополнительные поля (UF_)';
+$MESS['XILLIX_USER_PROFILE_PARAM_UF_FIELDS_DESC'] = 'Введите коды дополнительных полей через запятую';
+$MESS['XILLIX_USER_PROFILE_PARAM_ALLOW_EDIT'] = 'Разрешить редактирование';
+$MESS['XILLIX_USER_PROFILE_PARAM_ALLOW_EDIT_DESC'] = 'Разрешить пользователю редактировать свои данные';
+$MESS['XILLIX_USER_PROFILE_PARAM_SHOW_AVATAR'] = 'Показывать аватар';
+$MESS['XILLIX_USER_PROFILE_PARAM_SHOW_AVATAR_DESC'] = 'Отображать поле для загрузки фотографии';
+
+// Варианты полей для выбора в параметрах
+$MESS['XILLIX_USER_PROFILE_FIELD_NAME'] = 'Имя';
+$MESS['XILLIX_USER_PROFILE_FIELD_LAST_NAME'] = 'Фамилия';
+$MESS['XILLIX_USER_PROFILE_FIELD_SECOND_NAME'] = 'Отчество';
+$MESS['XILLIX_USER_PROFILE_FIELD_EMAIL'] = 'Email';
+$MESS['XILLIX_USER_PROFILE_FIELD_PERSONAL_PHONE'] = 'Телефон';
+$MESS['XILLIX_USER_PROFILE_FIELD_PERSONAL_MOBILE'] = 'Мобильный телефон';
+$MESS['XILLIX_USER_PROFILE_FIELD_PERSONAL_BIRTHDAY'] = 'Дата рождения';
+$MESS['XILLIX_USER_PROFILE_FIELD_PERSONAL_GENDER'] = 'Пол';
+$MESS['XILLIX_USER_PROFILE_FIELD_PERSONAL_COUNTRY'] = 'Страна';
+$MESS['XILLIX_USER_PROFILE_FIELD_PERSONAL_CITY'] = 'Город';
+$MESS['XILLIX_USER_PROFILE_FIELD_WORK_COMPANY'] = 'Компания';
+$MESS['XILLIX_USER_PROFILE_FIELD_WORK_POSITION'] = 'Должность';
+$MESS['XILLIX_USER_PROFILE_FIELD_PERSONAL_PHOTO'] = 'Фотография';

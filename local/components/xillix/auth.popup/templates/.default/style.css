@@ -1,0 +1,121 @@
+/* Стили для политик в попапе авторизации */
+.policies-container {
+    margin-top: 20px;
+    padding: 15px;
+    background: var(--color-bg1);
+    border-radius: 8px;
+    border: 1px solid #e0e0e0;
+}
+
+.policy-checkbox {
+    margin-bottom: 12px;
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    position: relative;
+}
+
+.policy-input {
+    margin-top: 3px;
+    flex-shrink: 0;
+    display: none;
+}
+
+.policy-label {
+    font-size: var(--font-size-14);
+    line-height: 1.4;
+    color: var(--color-black);
+    cursor: pointer;
+    text-align: start;
+    padding-left: 30px;
+}
+
+.policy-label:before {
+    position: absolute;
+    content: '';
+    width: 20px;
+    height: 20px;
+    top: 0;
+    left: 0;
+    border-radius: 6px;
+    background-color: var(--color-accent);
+}
+
+.policy-checkbox input[type="checkbox"]:checked + label:after {
+    position: absolute;
+    content: '';
+    width: 20px;
+    height: 20px;
+    top: 0;
+    left: 0;
+    background-image: url("./img/check_white.svg");
+    background-repeat: no-repeat;
+    background-position: 50% 50%;
+}
+
+.policy-link {
+    color: var(--color-accent);
+    text-decoration: underline;
+    transition: color var(--time-trans) ease;
+}
+
+.policy-link:hover {
+    color: #6a2cb8;
+}
+
+.btn-telegram {
+    width: 100%;
+    margin-top: 10px;
+    background: #0088cc;
+    transition: all var(--time-trans) ease;
+}
+
+.btn-telegram:hover:not(:disabled) {
+    background: #0077b3;
+    transform: translateY(-1px);
+}
+
+.btn-telegram:disabled {
+    background: #cccccc;
+    cursor: not-allowed;
+    transform: none;
+}
+
+/* Адаптивность */
+@media (max-width: 767px) {
+    .policy-label {
+        font-size: var(--font-size-12);
+    }
+
+    .policies-container {
+        padding: 12px;
+    }
+}
+
+.password-field {
+    position: relative;
+}
+
+.password-toggle {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    width: 20px;
+    height: 20px;
+    opacity: 0.6;
+    transition: opacity var(--time-trans) ease;
+}
+
+.password-toggle:hover {
+    opacity: 1;
+}
+
+.password-toggle svg {
+    width: 100%;
+    height: 100%;
+}

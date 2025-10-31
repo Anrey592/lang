@@ -1,0 +1,58 @@
+Options -Indexes
+ErrorDocument 404 /404.php
+
+<IfModule mod_rewrite.c>
+  Options +FollowSymLinks
+  RewriteEngine On
+
+    RewriteRule ^index\.php$ / [L,R=301]
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_URI} !\.(php|html?|css|js|png|jpg|jpeg|gif|ico|pdf|xml|txt)$ [NC]
+    RewriteCond %{REQUEST_URI} !^/(bitrix|upload|local|rest|api)
+    RewriteCond %{REQUEST_URI} !(.*)/$
+    RewriteRule ^(.*)$ /$1/ [L,R=301]
+
+    RewriteCond %{HTTPS} off
+    RewriteCond %{HTTP:X-Forwarded-Proto} !https
+    RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+
+    RewriteCond %{REQUEST_URI} /{2,} [OR]
+    RewriteCond %{THE_REQUEST} \s/{2,}
+    RewriteRule ^(.*)$ https://nikaverro.ru/$1 [R=301,L]
+
+    RewriteCond %{HTTP_HOST} ^www\.(.*) [NC]
+    RewriteRule ^(.*)$ https://%1/$1 [R=301,L]
+
+    RewriteCond %{REQUEST_URI} ^(.*)/index\.php$
+    RewriteCond %{THE_REQUEST} !bitrix/admin/
+    RewriteRule ^(.*)index\.php$ http://%{HTTP_HOST}/$1 [R=301,L]
+
+    RewriteCond %{REQUEST_URI} ^(.*?)\/{2,}(.*?)$
+    RewriteRule . %1/%2 [L,R=301]
+    RewriteCond %{THE_REQUEST} //
+    RewriteRule .* /$0 [R=301,L]
+
+  RewriteCond %{REQUEST_FILENAME} !-f
+  RewriteCond %{REQUEST_FILENAME} !-l
+  RewriteCond %{REQUEST_FILENAME} !-d
+  RewriteCond %{REQUEST_FILENAME} !/bitrix/urlrewrite.php$
+  RewriteRule ^(.*)$ /bitrix/urlrewrite.php [L]
+  RewriteRule .* - [E=REMOTE_USER:%{HTTP:Authorization}]
+</IfModule>
+
+<IfModule mod_dir.c>
+  DirectoryIndex index.php index.html
+</IfModule>
+
+<IfModule mod_negotiation.c>
+  Options -MultiViews
+</IfModule>
+
+<IfModule mod_expires.c>
+  ExpiresActive on
+  ExpiresByType image/jpeg "access plus 3 day"
+  ExpiresByType image/gif "access plus 3 day"
+  ExpiresByType image/png "access plus 3 day"
+  ExpiresByType text/css "access plus 3 day"
+  ExpiresByType application/javascript "access plus 3 day"
+</IfModule>

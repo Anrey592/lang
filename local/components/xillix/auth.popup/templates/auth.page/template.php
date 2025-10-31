@@ -1,0 +1,71 @@
+<?php if (!defined("B_PROLOG_INCLUDED") || B_PROLOG_INCLUDED !== true) die(); ?>
+
+<div class="auth-page" id="authPage">
+    <div class="auth-page-content">
+        <h3>Вход в систему</h3>
+
+        <form id="authPageForm">
+            <?= bitrix_sessid_post() ?>
+            <input type="hidden" name="AUTH_FORM" value="Y">
+            <input type="hidden" name="TYPE" value="AUTH">
+
+            <div class="form-group">
+                <label for="page_phone">Телефон</label>
+                <input type="tel" id="page_phone" name="USER_PHONE" required
+                       placeholder="+7 (___) ___-__-__">
+            </div>
+
+            <div class="form-group">
+                <label for="page_password">Пароль</label>
+                <div class="password-field">
+                    <input type="password" id="page_password_page" name="USER_PASSWORD" required
+                           placeholder="Введите пароль">
+                    <button type="button" class="password-toggle" id="page_password_toggle_page">
+                        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M10 4C4 4 1 10 1 10C1 10 4 16 10 16C16 16 19 10 19 10C19 10 16 4 10 4Z"
+                                  stroke="currentColor" stroke-width="2"/>
+                            <circle cx="10" cy="10" r="3" stroke="currentColor" stroke-width="2"/>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+
+            <button type="submit" class="btn btn-primary">Войти</button>
+
+            <div class="auth-page-links">
+                <?php
+                $currentUrl = $APPLICATION->GetCurPage();
+                $encodedUrl = str_replace(
+                    ['/', '?', '=', '&', '#', '.', ':', '%', '+', '-'],
+                    ['__', '_Q_', '_E_', '_A_', '_H_', '_D_', '_C_', '_P_', '_PL_', '_M_'],
+                    $currentUrl
+                );
+                ?>
+                <a href="#" class="register-link" id="showPoliciesLinkPage">Регистрация через Telegram</a>
+
+                <div class="policies-container" id="policiesContainerPage" style="display: none;">
+                    <div class="policy-checkbox">
+                        <input type="checkbox" id="policy1_page" name="policy1" class="policy-input">
+                        <label for="policy1_page" class="policy-label">
+                            Я согласен с <a href="/politika-obrabotki-personalnykh-dannykh/" target="_blank"
+                                            class="policy-link">политикой обработки персональных данных</a>
+                        </label>
+                    </div>
+                    <div class="policy-checkbox">
+                        <input type="checkbox" id="policy2_page" name="policy2" class="policy-input">
+                        <label for="policy2_page" class="policy-label">
+                            Я даю <a href="/soglasie-na-obrabotku-personalnykh-dannykh/" target="_blank"
+                                     class="policy-link">согласие на обработку персональных данных</a>
+                        </label>
+                    </div>
+                    <button type="button" class="btn btn-telegram" data-url="<?= $encodedUrl ?>"
+                            id="telegramRegisterBtnPage" disabled>
+                        Перейти в Telegram
+                    </button>
+                </div>
+            </div>
+        </form>
+
+        <div id="authPageMessage" class="message"></div>
+    </div>
+</div>

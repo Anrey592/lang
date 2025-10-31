@@ -1,0 +1,19 @@
+<?php
+$MESS['XILLIX_SCHEDULE_TEMPLATE_MY_SCHEDULE'] = 'Шаблон моего расписания';
+$MESS['XILLIX_SCHEDULE_TEMPLATE_DAY_ONLY'] = 'Только день (8:00-22:00)';
+$MESS['XILLIX_SCHEDULE_TEMPLATE_CLEAR'] = 'Очистить';
+$MESS['XILLIX_SCHEDULE_TEMPLATE_SAVE'] = 'Сохранить шаблон';
+$MESS['XILLIX_SCHEDULE_TEMPLATE_TIME'] = 'Время';
+$MESS['XILLIX_SCHEDULE_TEMPLATE_MONDAY'] = 'Понедельник';
+$MESS['XILLIX_SCHEDULE_TEMPLATE_TUESDAY'] = 'Вторник';
+$MESS['XILLIX_SCHEDULE_TEMPLATE_WEDNESDAY'] = 'Среда';
+$MESS['XILLIX_SCHEDULE_TEMPLATE_THURSDAY'] = 'Четверг';
+$MESS['XILLIX_SCHEDULE_TEMPLATE_FRIDAY'] = 'Пятница';
+$MESS['XILLIX_SCHEDULE_TEMPLATE_SATURDAY'] = 'Суббота';
+$MESS['XILLIX_SCHEDULE_TEMPLATE_SUNDAY'] = 'Воскресенье';
+$MESS['XILLIX_SCHEDULE_TEMPLATE_HELP'] = 'Кликните по ячейкам чтобы выбрать время. Кликните по заголовку дня чтобы выбрать/снять весь день. Кликните по времени чтобы выбрать/снять весь час.';
+$MESS['XILLIX_SCHEDULE_TEMPLATE_SAVE_SUCCESS'] = 'Шаблон расписания успешно сохранен';
+$MESS['XILLIX_SCHEDULE_TEMPLATE_CLEAR_SUCCESS'] = 'Шаблон расписания очищен';
+$MESS['XILLIX_SCHEDULE_TEMPLATE_ERROR'] = 'Произошла ошибка';
+$MESS['XILLIX_SCHEDULE_TEMPLATE_CONFIRM_CLEAR'] = 'Вы уверены, что хотите очистить шаблон расписания?';
+$MESS['XILLIX_SCHEDULE_TEMPLATE_TIMEZONE'] = 'Часовой пояс';

@@ -1,0 +1,24 @@
+<?
+$aMenuLinks = Array(
+	Array(
+		"Тесты",
+		"/testy/",
+		Array(), 
+		Array(), 
+		"" 
+	),
+	Array(
+		"Онлайн-тренажеры",
+		"/onlayn-trenazhery/",
+		Array(),
+		Array(),
+		""
+	),
+	Array(
+		"Блог",
+		"/blog/",
+		Array(),
+		Array(),
+		""
+	),
+);

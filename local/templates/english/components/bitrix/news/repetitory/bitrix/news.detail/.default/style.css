@@ -1,0 +1,175 @@
+.repetitory-detail {
+    margin-bottom: var(--section-margin-bottom);
+}
+
+.teacher-profile {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.teacher-main-info {
+    display: flex;
+    gap: 40px;
+    margin-bottom: 40px;
+}
+
+.teacher-media {
+    flex: 0 0 400px;
+}
+
+.teacher-info {
+    flex: 1;
+}
+
+.teacher-media-element {
+    width: 100%;
+    height: auto;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+}
+
+.teacher-video video,
+.teacher-photo img {
+    max-width: 100%;
+    display: block;
+}
+
+.teacher-voice {
+    margin-top: 20px;
+}
+
+.teacher-audio {
+    width: 100%;
+    margin-top: 10px;
+}
+
+.lesson-booking {
+    margin-top: 25px;
+    text-align: center;
+}
+
+.btn-book-lesson {
+    background: #28a745;
+    color: white;
+    border: none;
+    padding: 15px 30px;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    width: 100%;
+    transition: all var(--time-trans) ease;
+}
+
+.btn-book-lesson:hover {
+    filter: brightness(1.1);
+    transform: scale(var(--scale));
+    box-shadow: var(--shadow-lg);
+}
+
+.teacher-name {
+    color: #2c3e50;
+    margin-bottom: 10px;
+    font-size: 32px;
+}
+
+.teacher-date {
+    color: #6c757d;
+    font-size: 14px;
+    margin-bottom: 20px;
+    display: block;
+}
+
+.teacher-properties {
+    margin: 25px 0;
+}
+
+.teacher-property {
+    margin-bottom: 12px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid #e9ecef;
+}
+
+.teacher-property strong {
+    color: #495057;
+    display: inline-block;
+    min-width: 150px;
+}
+
+.property-value {
+    color: #6c757d;
+}
+
+.teacher-description,
+.teacher-detail-text {
+    margin-top: 30px;
+    line-height: 1.6;
+    color: #495057;
+}
+
+.teacher-description h3 {
+    color: #2c3e50;
+    margin-bottom: 15px;
+}
+
+/* Блок расписания */
+.teacher-schedule-container {
+    margin-top: 40px;
+    padding: 30px;
+    background: #f8f9fa;
+    border-radius: 12px;
+    border: 1px solid #dee2e6;
+}
+
+.schedule-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.schedule-header h2 {
+    color: #2c3e50;
+    margin: 0;
+}
+
+.btn-close-schedule {
+    background: #6c757d;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.btn-close-schedule:hover {
+    background: #5a6268;
+}
+
+.error-message {
+    color: #dc3545;
+    text-align: center;
+    padding: 20px;
+}
+
+/* Адаптивность */
+@media (max-width: 768px) {
+    .teacher-main-info {
+        flex-direction: column;
+        gap: 25px;
+    }
+
+    .teacher-media {
+        flex: none;
+    }
+
+    .teacher-schedule-container {
+        padding: 20px;
+    }
+
+    .schedule-header {
+        flex-direction: column;
+        gap: 15px;
+        align-items: flex-start;
+    }
+}
