@@ -44,7 +44,7 @@ class xillix_telegram extends CModule
                     mkdir($toolsDir, 0755, true);
                 }
             } else {
-                throw new SystemException(Loc::getMessage("VASOFT_LIKEIT_MODULE_REGISTER_ERROR"));
+                throw new SystemException(Loc::getMessage("XILLIX_MODULE_REGISTER_ERROR"));
             }
         } else {
             CAdminMessage::showMessage(
