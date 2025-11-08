@@ -2,6 +2,7 @@
 
 namespace Xillix\Telegram;
 
+use Bitrix\Main\Loader;
 use Bitrix\Main\Security\Random;
 use Bitrix\Main\UserTable;
 
@@ -101,6 +102,34 @@ class UserManager
         );
 
         $userId = $user->Add($fields);
+
+        if ($userId && !isset($fields['UF_TRUECONF_LOGIN'])) {
+            try {
+                // Создаём пользователя в TrueConf
+                if (!Loader::includeModule('xillix.videoconf')) {
+                    return ['success' => false, 'error' => 'Module xillix.videoconf not installed'];
+                }
+
+                $tcManager = new \Xillix\Videoconf\TrueConfManager();
+                $tcResponse = $tcManager->createTrueConfUser($fields);
+
+                if ($tcResponse && isset($tcResponse['user']['id'])) {
+                    // Сохраняем логин и пароль в профиль Bitrix
+                    $userToUpdate = new \CUser();
+                    $userToUpdate->Update($userId, [
+                        'UF_TRUECONF_LOGIN' => $tcResponse['user']['id'],
+                        'UF_TRUECONF_PASSWORD' => $tcResponse['user']['password']
+                    ]);
+                }
+            } catch (\Exception $e) {
+//                \CEventLog::Add([
+//                    'SEVERITY' => 'ERROR',
+//                    'AUDIT_TYPE_ID' => 'TRUECONF_USER_CREATE',
+//                    'MODULE_ID' => 'xillix.videoconf',
+//                    'DESCRIPTION' => 'Ошибка создания пользователя в TrueConf: ' . $e->getMessage()
+//                ]);
+            }
+        }
 
         if ($userId > 0) {
             $USER->Authorize($userId);
