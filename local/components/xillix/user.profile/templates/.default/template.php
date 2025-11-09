@@ -7,8 +7,9 @@ if (!defined('B_PROLOG_INCLUDED') || B_PROLOG_INCLUDED !== true) {
 /** @var array $arParams */
 /** @var array $arResult */
 /** @global CMain $APPLICATION */
-
 /** @global CUser $USER */
+
+/** @var UserProfileComponent $component */
 
 use Bitrix\Main\Localization\Loc;
 
@@ -75,7 +76,9 @@ Loc::loadMessages(__FILE__);
                 <div class="user-profile-field">
                     <span class="user-profile-label"><?= $fieldInfo['NAME'] ?></span>
                     <div class="user-profile-value">
-                        <span class="user-profile-text"><?= $arResult['USER_DATA'][$fieldCode] ?: Loc::getMessage('XILLIX_USER_PROFILE_NOT_SPECIFIED') ?></span>
+                        <span class="user-profile-text">
+                            <?= $component->getUfFieldDisplayValue($fieldInfo, $arResult['USER_DATA'][$fieldCode] ?? '') ?>
+                        </span>
                     </div>
                 </div>
             <?php endforeach; ?>
@@ -111,7 +114,9 @@ Loc::loadMessages(__FILE__);
                                         <?= Loc::getMessage('XILLIX_USER_PROFILE_NO_PHOTO') ?>
                                     </div>
                                 <?php endif; ?>
-                                <input type="file" name="PERSONAL_PHOTO" class="user-profile-file-input">
+                                <?php if (!$component->isFieldReadonly('PERSONAL_PHOTO')): ?>
+                                    <input type="file" name="PERSONAL_PHOTO" class="user-profile-file-input">
+                                <?php endif; ?>
                             </div>
                         </div>
                     <?php endif; ?>
@@ -122,32 +127,57 @@ Loc::loadMessages(__FILE__);
                         <div class="user-profile-field">
                             <span class="user-profile-label"><?= $fieldName ?></span>
                             <div class="user-profile-value">
-                                <?php if ($fieldCode === 'PERSONAL_GENDER'): ?>
-                                    <select name="<?= $fieldCode ?>" class="user-profile-input">
-                                        <option value=""><?= Loc::getMessage('XILLIX_USER_PROFILE_NOT_SELECTED') ?></option>
-                                        <option value="M" <?= $arResult['USER_DATA'][$fieldCode] === 'M' ? 'selected' : '' ?>>
-                                            <?= Loc::getMessage('XILLIX_USER_PROFILE_GENDER_M') ?>
-                                        </option>
-                                        <option value="F" <?= $arResult['USER_DATA'][$fieldCode] === 'F' ? 'selected' : '' ?>>
-                                            <?= Loc::getMessage('XILLIX_USER_PROFILE_GENDER_F') ?>
-                                        </option>
-                                    </select>
-                                <?php elseif ($fieldCode === 'PERSONAL_BIRTHDAY'): ?>
-                                    <input type="date"
-                                           name="<?= $fieldCode ?>"
-                                           value="<?= $arResult['USER_DATA'][$fieldCode] ?: '' ?>"
-                                           class="user-profile-input">
-                                <?php elseif ($fieldCode === 'EMAIL'): ?>
-                                    <input type="email"
-                                           name="<?= $fieldCode ?>"
-                                           value="<?= $arResult['USER_DATA'][$fieldCode] ?: '' ?>"
-                                           class="user-profile-input"
-                                           required>
+                                <?php if ($component->isFieldReadonly($fieldCode)): ?>
+                                    <!-- Поле только для чтения -->
+                                    <div class="user-profile-readonly-value">
+                                        <?php
+                                        $value = $arResult['USER_DATA'][$fieldCode] ?? '';
+                                        if ($fieldCode === 'PERSONAL_GENDER') {
+                                            echo $arResult['USER_DATA']['PERSONAL_GENDER_TEXT'] ?? '';
+                                        } elseif ($fieldCode === 'PERSONAL_BIRTHDAY' && !empty($value)) {
+                                            echo $arResult['USER_DATA']['PERSONAL_BIRTHDAY_FORMATTED'] ?? '';
+                                        } else {
+                                            echo $value ?: Loc::getMessage('XILLIX_USER_PROFILE_NOT_SPECIFIED');
+                                        }
+                                        ?>
+                                    </div>
+                                    <input type="hidden" name="<?= $fieldCode ?>"
+                                           value="<?= htmlspecialcharsbx($arResult['USER_DATA'][$fieldCode] ?? '') ?>">
                                 <?php else: ?>
-                                    <input type="text"
-                                           name="<?= $fieldCode ?>"
-                                           value="<?= $arResult['USER_DATA'][$fieldCode] ?: '' ?>"
-                                           class="user-profile-input">
+                                    <!-- Редактируемое поле -->
+                                    <?php if ($fieldCode === 'PERSONAL_GENDER'): ?>
+                                        <select name="<?= $fieldCode ?>"
+                                                class="user-profile-input <?= isset($arResult['FORM_ERRORS'][$fieldCode]) ? 'user-profile-input-error' : '' ?>">
+                                            <option value=""><?= Loc::getMessage('XILLIX_USER_PROFILE_NOT_SELECTED') ?></option>
+                                            <option value="M" <?= ($arResult['USER_DATA'][$fieldCode] ?? '') === 'M' ? 'selected' : '' ?>>
+                                                <?= Loc::getMessage('XILLIX_USER_PROFILE_GENDER_M') ?>
+                                            </option>
+                                            <option value="F" <?= ($arResult['USER_DATA'][$fieldCode] ?? '') === 'F' ? 'selected' : '' ?>>
+                                                <?= Loc::getMessage('XILLIX_USER_PROFILE_GENDER_F') ?>
+                                            </option>
+                                        </select>
+                                    <?php elseif ($fieldCode === 'PERSONAL_BIRTHDAY'): ?>
+                                        <input type="date"
+                                               name="<?= $fieldCode ?>"
+                                               value="<?= $arResult['USER_DATA'][$fieldCode] ?? '' ?>"
+                                               class="user-profile-input <?= isset($arResult['FORM_ERRORS'][$fieldCode]) ? 'user-profile-input-error' : '' ?>">
+                                    <?php elseif ($fieldCode === 'EMAIL'): ?>
+                                        <input type="email"
+                                               name="<?= $fieldCode ?>"
+                                               value="<?= $arResult['USER_DATA'][$fieldCode] ?? '' ?>"
+                                               class="user-profile-input <?= isset($arResult['FORM_ERRORS'][$fieldCode]) ? 'user-profile-input-error' : '' ?>"
+                                            <?= in_array($fieldCode, ['NAME', 'EMAIL']) ? 'required' : '' ?>>
+                                    <?php else: ?>
+                                        <input type="text"
+                                               name="<?= $fieldCode ?>"
+                                               value="<?= $arResult['USER_DATA'][$fieldCode] ?? '' ?>"
+                                               class="user-profile-input <?= isset($arResult['FORM_ERRORS'][$fieldCode]) ? 'user-profile-input-error' : '' ?>"
+                                            <?= $fieldCode === 'NAME' ? 'required' : '' ?>>
+                                    <?php endif; ?>
+
+                                    <?php if (isset($arResult['FORM_ERRORS'][$fieldCode])): ?>
+                                        <div class="user-profile-field-error"><?= $arResult['FORM_ERRORS'][$fieldCode] ?></div>
+                                    <?php endif; ?>
                                 <?php endif; ?>
                             </div>
                         </div>
@@ -157,24 +187,16 @@ Loc::loadMessages(__FILE__);
                         <div class="user-profile-field">
                             <span class="user-profile-label"><?= $fieldInfo['NAME'] ?></span>
                             <div class="user-profile-value">
-                                <?php if ($fieldInfo['TYPE'] === 'string'): ?>
-                                    <input type="text"
-                                           name="<?= $fieldCode ?>"
-                                           value="<?= $arResult['USER_DATA'][$fieldCode] ?: '' ?>"
-                                           class="user-profile-input">
-                                <?php elseif ($fieldInfo['TYPE'] === 'text'): ?>
-                                    <textarea name="<?= $fieldCode ?>"
-                                              class="user-profile-textarea"><?= $arResult['USER_DATA'][$fieldCode] ?: '' ?></textarea>
-                                <?php elseif ($fieldInfo['TYPE'] === 'date'): ?>
-                                    <input type="date"
-                                           name="<?= $fieldCode ?>"
-                                           value="<?= $arResult['USER_DATA'][$fieldCode] ?: '' ?>"
-                                           class="user-profile-input">
+                                <?php if ($component->isFieldReadonly($fieldCode)): ?>
+                                    <!-- UF-поле только для чтения -->
+                                    <div class="user-profile-readonly-value">
+                                        <?= $component->getUfFieldDisplayValue($fieldInfo, $arResult['USER_DATA'][$fieldCode] ?? '') ?>
+                                    </div>
+                                    <input type="hidden" name="<?= $fieldCode ?>"
+                                           value="<?= htmlspecialcharsbx($arResult['USER_DATA'][$fieldCode] ?? '') ?>">
                                 <?php else: ?>
-                                    <input type="text"
-                                           name="<?= $fieldCode ?>"
-                                           value="<?= $arResult['USER_DATA'][$fieldCode] ?: '' ?>"
-                                           class="user-profile-input">
+                                    <!-- Редактируемое UF-поле -->
+                                    <?= $component->getUfFieldInput($fieldInfo, $arResult['USER_DATA'][$fieldCode] ?? '', $fieldCode) ?>
                                 <?php endif; ?>
                             </div>
                         </div>
@@ -205,6 +227,12 @@ Loc::loadMessages(__FILE__);
         } else {
             if (editMode) editMode.style.display = 'none';
             viewMode.style.display = 'block';
+
+            // Сбрасываем ошибки при выходе из режима редактирования
+            const errorInputs = document.querySelectorAll('.user-profile-input-error');
+            errorInputs.forEach(input => {
+                input.classList.remove('user-profile-input-error');
+            });
         }
     }
 

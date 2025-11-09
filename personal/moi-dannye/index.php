@@ -35,7 +35,7 @@ if (!$USER->IsAuthorized()) {
                     '',
                     [
                         'FIELDS' => ['NAME', 'LAST_NAME', 'PERSONAL_PHONE', 'PERSONAL_BIRTHDAY'],
-//                        'UF_FIELDS' => ['UF_SKILLS', 'UF_INTERESTS'],
+                        'UF_FIELDS' => ['UF_TRUECONF_LOGIN', 'UF_TRUECONF_PASSWORD'],
                         'ALLOW_EDIT' => 'Y',
                         'SHOW_AVATAR' => 'Y',
                     ]

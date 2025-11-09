@@ -13,6 +13,8 @@ class UserProfileComponent extends CBitrixComponent
     public function onPrepareComponentParams($arParams)
     {
         $arParams['FIELDS'] = $arParams['FIELDS'] ?? [];
+        $arParams['READONLY_FIELDS'] = $arParams['READONLY_FIELDS'] ?? [];
+        $arParams['UF_FIELDS'] = $arParams['UF_FIELDS'] ?? [];
         $arParams['ALLOW_EDIT'] = $arParams['ALLOW_EDIT'] ?? 'Y';
         $arParams['SHOW_AVATAR'] = $arParams['SHOW_AVATAR'] ?? 'Y';
         $arParams['CACHE_TIME'] = $arParams['CACHE_TIME'] ?? 3600;
@@ -37,6 +39,11 @@ class UserProfileComponent extends CBitrixComponent
         $this->arResult['SHOW_AVATAR'] = $this->arParams['SHOW_AVATAR'] === 'Y';
         $this->arResult['IS_EDIT_MODE'] = false;
 
+        // Инициализируем параметры
+        $this->arResult['READONLY_FIELDS'] = is_array($this->arParams['READONLY_FIELDS'])
+            ? $this->arParams['READONLY_FIELDS']
+            : [];
+
         $this->prepareFields();
         $this->processForm();
         $this->prepareUserData();
@@ -47,7 +54,7 @@ class UserProfileComponent extends CBitrixComponent
     private function prepareFields()
     {
         // Загружаем языковые файлы из шаблона
-        Loc::loadMessages($_SERVER['DOCUMENT_ROOT'] . __DIR__ . '/lang/' . LANGUAGE_ID . '/template.php');
+        Loc::loadMessages($_SERVER['DOCUMENT_ROOT'] . $this->__path . '/lang/' . LANGUAGE_ID . '/template.php');
 
         $defaultFields = [
             'PERSONAL_PHOTO' => Loc::getMessage('XILLIX_USER_PROFILE_PERSONAL_PHOTO'),
@@ -77,20 +84,29 @@ class UserProfileComponent extends CBitrixComponent
             }
         }
 
-        // Дополнительные поля (UF_*)
         $this->arResult['UF_FIELDS'] = [];
-        if (!empty($this->arParams['UF_FIELDS'])) {
+        if (!empty($this->arParams['UF_FIELDS']) && is_array($this->arParams['UF_FIELDS'])) {
             $userFieldEntity = \CUserTypeEntity::GetList(
                 [],
-                ['ENTITY_ID' => 'USER', 'FIELD_NAME' => $this->arParams['UF_FIELDS']]
+                [
+                    'ENTITY_ID' => 'USER',
+                    'FIELD_NAME' => $this->arParams['UF_FIELDS'],
+                    'LANG' => LANGUAGE_ID
+                ]
             );
 
             while ($userField = $userFieldEntity->Fetch()) {
-                $this->arResult['UF_FIELDS'][$userField['FIELD_NAME']] = [
-                    'NAME' => $userField['EDIT_FORM_LABEL'][LANGUAGE_ID] ?: $userField['FIELD_NAME'],
-                    'TYPE' => $userField['USER_TYPE_ID'],
-                    'SETTINGS' => $userField['SETTINGS'],
-                ];
+                $fieldName = $userField['FIELD_NAME'];
+                if (in_array($fieldName, $this->arParams['UF_FIELDS'])) {
+                    $label = $userField['EDIT_FORM_LABEL'] ?: $fieldName;
+
+                    $this->arResult['UF_FIELDS'][$fieldName] = [
+                        'NAME' => $label,
+                        'TYPE' => $userField['USER_TYPE_ID'],
+                        'SETTINGS' => $userField['SETTINGS'],
+                        'ENTITY' => $userField,
+                    ];
+                }
             }
         }
     }
@@ -125,6 +141,13 @@ class UserProfileComponent extends CBitrixComponent
             if (isset($genderList[$userData['PERSONAL_GENDER']])) {
                 $this->arResult['USER_DATA']['PERSONAL_GENDER_TEXT'] = $genderList[$userData['PERSONAL_GENDER']];
             }
+
+            // Получаем значения UF-полей для отображения
+            foreach ($this->arResult['UF_FIELDS'] as $fieldCode => $fieldInfo) {
+                if (isset($userData[$fieldCode])) {
+                    $this->arResult['USER_DATA'][$fieldCode] = $userData[$fieldCode];
+                }
+            }
         }
     }
 
@@ -144,23 +167,46 @@ class UserProfileComponent extends CBitrixComponent
 
         $user = new \CUser;
         $fields = [];
+        $this->arResult['FORM_ERRORS'] = [];
 
-        // Основные поля
+        // Основные поля (исключаем readonly)
         foreach ($this->arResult['FIELDS'] as $fieldCode => $fieldName) {
+            // Пропускаем поля только для чтения
+            if (in_array($fieldCode, $this->arResult['READONLY_FIELDS'])) {
+                continue;
+            }
+
             if ($fieldCode === 'PERSONAL_PHOTO') {
                 if (!empty($_FILES[$fieldCode]['name'])) {
                     $fields[$fieldCode] = $_FILES[$fieldCode];
                 }
             } elseif (isset($_POST[$fieldCode])) {
+                $fields[$fieldCode] = trim($_POST[$fieldCode]);
+
+                // Базовая валидация обязательных полей
+                if (in_array($fieldCode, ['NAME', 'EMAIL']) && empty($fields[$fieldCode])) {
+                    $this->arResult['FORM_ERRORS'][$fieldCode] = Loc::getMessage('XILLIX_USER_PROFILE_FIELD_REQUIRED');
+                }
+            }
+        }
+
+        // Дополнительные поля UF (исключаем readonly)
+        foreach ($this->arResult['UF_FIELDS'] as $fieldCode => $fieldInfo) {
+            // Пропускаем UF-поля только для чтения
+            if (in_array($fieldCode, $this->arResult['READONLY_FIELDS'])) {
+                continue;
+            }
+
+            if (isset($_POST[$fieldCode])) {
                 $fields[$fieldCode] = $_POST[$fieldCode];
             }
         }
 
-        // Дополнительные поля
-        foreach ($this->arResult['UF_FIELDS'] as $fieldCode => $fieldInfo) {
-            if (isset($_POST[$fieldCode])) {
-                $fields[$fieldCode] = $_POST[$fieldCode];
-            }
+        // Если есть ошибки валидации
+        if (!empty($this->arResult['FORM_ERRORS'])) {
+            $this->arResult['ERROR'] = Loc::getMessage('XILLIX_USER_PROFILE_VALIDATION_ERROR');
+            $this->arResult['IS_EDIT_MODE'] = true;
+            return;
         }
 
         if (!empty($fields)) {
@@ -173,5 +219,68 @@ class UserProfileComponent extends CBitrixComponent
                 $this->arResult['IS_EDIT_MODE'] = true;
             }
         }
+    }
+
+    /**
+     * Вспомогательный метод для проверки является ли поле readonly
+     */
+    public function isFieldReadonly($fieldCode)
+    {
+        return in_array($fieldCode, $this->arResult['READONLY_FIELDS']);
+    }
+
+    /**
+     * Получение отображаемого значения UF-поля
+     */
+    public function getUfFieldDisplayValue($fieldInfo, $value)
+    {
+        if (empty($value)) {
+            return Loc::getMessage('XILLIX_USER_PROFILE_NOT_SPECIFIED');
+        }
+
+        $entity = $fieldInfo['ENTITY'] ?? [];
+        $settings = [
+            'bVarsFromForm' => false,
+            'arUserField' => array_merge($entity, [
+                'USER_TYPE_ID' => $fieldInfo['TYPE'],
+                'SETTINGS' => $fieldInfo['SETTINGS'],
+            ]),
+            'arUserFieldValue' => $value,
+        ];
+
+        ob_start();
+        $GLOBALS['APPLICATION']->IncludeComponent(
+            'bitrix:system.field.view',
+            $fieldInfo['TYPE'],
+            $settings
+        );
+        return ob_get_clean() ?: $value;
+    }
+
+    /**
+     * Получение HTML-кода для редактирования UF-поля
+     */
+    public function getUfFieldInput($fieldInfo, $value, $fieldCode)
+    {
+        $entity = $fieldInfo['ENTITY'] ?? [];
+        $settings = [
+            'bVarsFromForm' => false,
+            'FORM_NAME' => 'user_profile_form',
+            'arUserField' => array_merge($entity, [
+                'USER_TYPE_ID' => $fieldInfo['TYPE'],
+                'SETTINGS' => $fieldInfo['SETTINGS'],
+                'FIELD_NAME' => $fieldCode,
+                'VALUE' => $value,
+            ]),
+            'arUserFieldValue' => $value,
+        ];
+
+        ob_start();
+        $GLOBALS['APPLICATION']->IncludeComponent(
+            'bitrix:system.field.edit',
+            $fieldInfo['TYPE'],
+            $settings
+        );
+        return ob_get_clean();
     }
 }

@@ -29,11 +29,35 @@ $arComponentParameters = [
             'DEFAULT' => ['NAME', 'LAST_NAME', 'EMAIL'],
             'ADDITIONAL_VALUES' => 'N',
         ],
+        'READONLY_FIELDS' => array(
+            'PARENT' => 'BASE',
+            'NAME' => 'Поля только для чтения',
+            'TYPE' => 'LIST',
+            'MULTIPLE' => 'Y',
+            'VALUES' => array(
+                'PERSONAL_PHOTO' => 'Фотография',
+                'NAME' => 'Имя',
+                'LAST_NAME' => 'Фамилия',
+                'SECOND_NAME' => 'Отчество',
+                'EMAIL' => 'E-Mail',
+                'PERSONAL_PHONE' => 'Телефон',
+                'PERSONAL_MOBILE' => 'Мобильный',
+                'PERSONAL_BIRTHDAY' => 'Дата рождения',
+                'PERSONAL_GENDER' => 'Пол',
+                'PERSONAL_COUNTRY' => 'Страна',
+                'PERSONAL_CITY' => 'Город',
+                'WORK_COMPANY' => 'Компания',
+                'WORK_POSITION' => 'Должность',
+            ),
+            'DEFAULT' => array(),
+        ),
         'UF_FIELDS' => [
             'PARENT' => 'BASE',
             'NAME' => GetMessage('XILLIX_USER_PROFILE_PARAM_UF_FIELDS'),
-            'TYPE' => 'STRING',
-            'DEFAULT' => '',
+            'TYPE' => 'LIST',
+            'MULTIPLE' => 'Y',
+            'VALUES' => array(),
+            'DEFAULT' => array(),
         ],
         'ALLOW_EDIT' => [
             'PARENT' => 'BASE',
@@ -50,3 +74,18 @@ $arComponentParameters = [
         'CACHE_TIME' => ['DEFAULT' => 3600],
     ],
 ];
+
+$userTypeEntity = new CUserTypeEntity();
+$rsData = $userTypeEntity->GetList(array(), array('ENTITY_ID' => 'USER'));
+while ($arField = $rsData->Fetch()) {
+    $arComponentParameters['PARAMETERS']['UF_FIELDS']['VALUES'][$arField['FIELD_NAME']] =
+        '[' . $arField['FIELD_NAME'] . '] ' . ($arField['EDIT_FORM_LABEL'] ?: $arField['FIELD_NAME']);
+}
+
+// Динамическое получение UF-свойств для readonly
+$userTypeEntity = new CUserTypeEntity();
+$rsData = $userTypeEntity->GetList(array(), array('ENTITY_ID' => 'USER'));
+while ($arField = $rsData->Fetch()) {
+    $arComponentParameters['PARAMETERS']['READONLY_FIELDS']['VALUES'][$arField['FIELD_NAME']] =
+        '[UF] ' . ($arField['EDIT_FORM_LABEL'] ?: $arField['FIELD_NAME']);
+}
