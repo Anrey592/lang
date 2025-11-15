@@ -11,11 +11,13 @@ if (!defined('B_PROLOG_INCLUDED') || B_PROLOG_INCLUDED !== true) {
 
 /** @var UserProfileComponent $component */
 
+use Bitrix\Main\Config\Option;
 use Bitrix\Main\Localization\Loc;
 
 // Подключаем языковые файлы шаблона
 Loc::loadMessages(__FILE__);
 
+$serverDomain = Option::get('xillix.videoconf', 'server_domain');
 ?>
 <div class="user-profile">
     <?php if ($arResult['ERROR']): ?>
@@ -50,6 +52,50 @@ Loc::loadMessages(__FILE__);
                 </div>
             <?php endif; ?>
 
+            <?php if (!empty($arResult['IBLOCK_ELEMENT'])): ?>
+                <?php
+                // Вывод полей элемента
+                foreach ($arResult['IBLOCK_FIELDS_TO_SHOW'] as $fieldCode):
+                    if (!isset($arResult['IBLOCK_ELEMENT'][$fieldCode])) continue;
+                    $value = $arResult['IBLOCK_ELEMENT'][$fieldCode]['VALUE'];
+                    if (empty($value)) continue;
+                    ?>
+                    <div class="user-profile-field">
+                        <span class="user-profile-label">
+                            <?= $arResult['IBLOCK_ELEMENT'][$fieldCode]['NAME'] ?>
+                        </span>
+                        <div class="user-profile-value">
+                            <span class="user-profile-text"><?= $value ?></span>
+                        </div>
+                    </div>
+                <?php endforeach; ?>
+
+                <?php
+                // Вывод свойств элемента
+                foreach ($arResult['IBLOCK_PROPS_TO_SHOW'] as $propCode):
+                    $propCode = trim($propCode);
+                    if (empty($propCode)) continue;
+                    if (empty($arResult['IBLOCK_ELEMENT']['PROPERTIES'][$propCode])) continue;
+
+                    $values = $arResult['IBLOCK_ELEMENT']['PROPERTIES'][$propCode];
+                    ?>
+                    <div class="user-profile-field">
+                    <span class="user-profile-label">
+                        <?= $values['NAME']; ?>
+                    </span>
+                        <div class="user-profile-value">
+                            <? if (is_array($values['VALUE'])) { ?>
+                                <? foreach ($values['VALUE'] as $value) { ?>
+                                    <span class="user-profile-text"><?= $value ?></span>
+                                <? } ?>
+                            <? } else { ?>
+                                <span class="user-profile-text"><?= $values['VALUE'] ?></span>
+                            <? } ?>
+                        </div>
+                    </div>
+                <?php endforeach; ?>
+            <?php endif; ?>
+
             <?php foreach ($arResult['FIELDS'] as $fieldCode => $fieldName): ?>
                 <?php if ($fieldCode === 'PERSONAL_PHOTO') continue; ?>
 
@@ -82,6 +128,14 @@ Loc::loadMessages(__FILE__);
                     </div>
                 </div>
             <?php endforeach; ?>
+            <? if (!empty($serverDomain)) { ?>
+                <div class="user-profile-field">
+                    <span class="user-profile-label">Сервер TrueConf</span>
+                    <div class="user-profile-value">
+                        <span class="user-profile-text"><?= $serverDomain ?></span>
+                    </div>
+                </div>
+            <? } ?>
         </div>
 
         <?php if ($arResult['ALLOW_EDIT']): ?>
@@ -104,7 +158,7 @@ Loc::loadMessages(__FILE__);
                     <?php if ($arResult['SHOW_AVATAR'] && isset($arResult['FIELDS']['PERSONAL_PHOTO'])): ?>
                         <div class="user-profile-field user-profile-field-photo">
                             <span class="user-profile-label"><?= $arResult['FIELDS']['PERSONAL_PHOTO'] ?></span>
-                            <div class="user-profile-photo-container">
+                            <label class="user-profile-photo-container" for="PERSONAL_PHOTO">
                                 <?php if (!empty($arResult['USER_DATA']['PERSONAL_PHOTO_SRC'])): ?>
                                     <img src="<?= $arResult['USER_DATA']['PERSONAL_PHOTO_SRC'] ?>"
                                          alt="<?= Loc::getMessage('XILLIX_USER_PROFILE_AVATAR_ALT') ?>"
@@ -115,9 +169,10 @@ Loc::loadMessages(__FILE__);
                                     </div>
                                 <?php endif; ?>
                                 <?php if (!$component->isFieldReadonly('PERSONAL_PHOTO')): ?>
-                                    <input type="file" name="PERSONAL_PHOTO" class="user-profile-file-input">
+                                    <input type="file" name="PERSONAL_PHOTO" id="PERSONAL_PHOTO"
+                                           class="user-profile-file-input hidden">
                                 <?php endif; ?>
-                            </div>
+                            </label>
                         </div>
                     <?php endif; ?>
 
@@ -189,11 +244,7 @@ Loc::loadMessages(__FILE__);
                             <div class="user-profile-value">
                                 <?php if ($component->isFieldReadonly($fieldCode)): ?>
                                     <!-- UF-поле только для чтения -->
-                                    <div class="user-profile-readonly-value">
-                                        <?= $component->getUfFieldDisplayValue($fieldInfo, $arResult['USER_DATA'][$fieldCode] ?? '') ?>
-                                    </div>
-                                    <input type="hidden" name="<?= $fieldCode ?>"
-                                           value="<?= htmlspecialcharsbx($arResult['USER_DATA'][$fieldCode] ?? '') ?>">
+                                    <span class="user-profile-text"><?= $component->getUfFieldDisplayValue($fieldInfo, $arResult['USER_DATA'][$fieldCode] ?? '') ?></span>
                                 <?php else: ?>
                                     <!-- Редактируемое UF-поле -->
                                     <?= $component->getUfFieldInput($fieldInfo, $arResult['USER_DATA'][$fieldCode] ?? '', $fieldCode) ?>
@@ -201,6 +252,14 @@ Loc::loadMessages(__FILE__);
                             </div>
                         </div>
                     <?php endforeach; ?>
+                    <? if (!empty($serverDomain)) { ?>
+                        <div class="user-profile-field">
+                            <span class="user-profile-label">Сервер TrueConf</span>
+                            <div class="user-profile-value">
+                                <span class="user-profile-text"><?= $serverDomain ?></span>
+                            </div>
+                        </div>
+                    <? } ?>
                 </div>
 
                 <div class="user-profile-actions">

@@ -30,6 +30,9 @@ class xillix_videoconf extends CModule
             ModuleManager::registerModule($this->MODULE_ID);
             if (Loader::includeModule($this->MODULE_ID)) {
                 $this->installUserFields();
+                $this->installComponents();
+                $this->registerAgent();
+                $this->installTools();
             } else {
                 throw new SystemException(Loc::getMessage("XILLIX_MODULE_REGISTER_ERROR"));
             }
@@ -39,6 +42,58 @@ class xillix_videoconf extends CModule
             );
             return;
         }
+    }
+
+    private function registerAgent()
+    {
+        // Удаляем старый агент (на случай повторной установки)
+        \CAgent::RemoveModuleAgents($this->MODULE_ID);
+
+        \CAgent::AddAgent(
+            "\\Xillix\\Videoconf\\Agent::processRecordings();",
+            $this->MODULE_ID,
+            "N",
+            900, // 15 минут
+            "",
+            "Y",
+            ConvertTimeStamp(time() + 900, "FULL")
+        );
+
+        // Агент для очистки старых конференций (раз в сутки)
+        \CAgent::AddAgent(
+            "\\Xillix\\Videoconf\\CleanupAgent::deleteOldConferences();",
+            $this->MODULE_ID,
+            "N",
+            86400, // 24 часа
+            "",
+            "Y",
+            ConvertTimeStamp(time() + 86400, "FULL")
+        );
+    }
+
+    private function installTools()
+    {
+        $source = __DIR__ . '/tools/recording_proxy.php';
+        $destDir = $_SERVER['DOCUMENT_ROOT'] . '/bitrix/tools/xillix.videoconf/';
+        $destFile = $destDir . 'recording_proxy.php';
+
+        if (!is_dir($destDir)) {
+            mkdir($destDir, 0755, true);
+        }
+
+        if (file_exists($source)) {
+            copy($source, $destFile);
+            chmod($destFile, 0644);
+        }
+    }
+
+    private function installComponents()
+    {
+        CopyDirFiles(
+            $_SERVER['DOCUMENT_ROOT'] . '/local/modules/xillix.videoconf/install/components',
+            $_SERVER['DOCUMENT_ROOT'] . '/local/components',
+            true, true
+        );
     }
 
     public function doUninstall()
@@ -53,6 +108,7 @@ class xillix_videoconf extends CModule
             if ($request['savedata'] !== 'Y') {
                 $this->uninstallUserFields();
                 COption::RemoveOption($this->MODULE_ID);
+                \CAgent::RemoveModuleAgents($this->MODULE_ID);
             }
             ModuleManager::unRegisterModule($this->MODULE_ID);
         }

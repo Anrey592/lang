@@ -1,5 +1,5 @@
 <?php
-$MESS['XILLIX_VIDEOCONF_MODULE_NAME'] = 'Интеграция с TrueConf';
+$MESS['XILLIX_VIDEOCONF_MODULE_NAME'] = 'Xillix Интеграция с TrueConf';
 $MESS['XILLIX_VIDEOCONF_MODULE_DESC'] = 'Управление видеоконференциями TrueConf из Битрикс';
 $MESS['XILLIX_VIDEOCONF_UNINSTALL_TITLE'] = 'Удаление модуля';
 $MESS['XILLIX_VIDEOCONF_UNINSTALL_CONFIRM'] = 'Вы уверены, что хотите удалить модуль?';

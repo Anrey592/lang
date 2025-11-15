@@ -17,7 +17,7 @@ $this->addExternalCSS($this->GetFolder() . '/style.css');
 
     <?php if (empty($arResult['STUDENTS'])): ?>
         <div class="students-empty">
-            <p>У вас пока нет учеников</p>
+            У вас пока нет учеников
         </div>
     <?php else: ?>
         <div class="students-list">

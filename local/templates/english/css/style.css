@@ -156,7 +156,7 @@ input {
 
 input[type="text"],
 textarea,
-input[type="tel"]{
+input[type="tel"] {
     transition: all var(--time-trans) ease;
 }
 
@@ -321,7 +321,7 @@ main {
     gap: 20px;
 }
 
-.additional-menu ul li a{
+.additional-menu ul li a {
     display: block;
 }
 
@@ -1780,6 +1780,43 @@ section.info {
     font-size: var(--font-size-18);
     line-height: 26px;
     margin-top: 24px;
+}
+
+.faq-detail ol li ,
+.faq-questions details ol li {
+    list-style-position: inside;
+}
+
+.faq-detail ul li ,
+.faq-questions details ul li {
+    list-style: inside;
+    margin-left: 15px;
+}
+
+.faq-detail li:not(:last-child),
+.faq-questions details li:not(:last-child) {
+    margin-bottom: 2px;
+}
+
+.faq-detail li,
+.faq-questions details li {
+    padding: 5px 0;
+}
+
+.faq-detail p img,
+.faq-questions details p img {
+    max-width: 100%;
+    object-fit: contain;
+}
+
+.faq-personal-list {
+    margin-top: 40px;
+    display: flex;
+    flex-direction: column;
+}
+
+.faq-personal-list .btn:not(:last-child) {
+    margin-bottom: 15px;
 }
 
 .faq-contact p {

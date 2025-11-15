@@ -1,0 +1,103 @@
+.schedule-table-container {
+    margin: 20px 0;
+}
+
+.lessons-list-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+}
+
+.lessons-list-table th,
+.lessons-list-table td {
+    padding: 12px 15px;
+    text-align: left;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+.lessons-list-table th {
+    background-color: #f8f9fa;
+    font-weight: 600;
+    color: #495057;
+}
+
+.lessons-list-table a {
+    color: #007bff;
+    text-decoration: none;
+}
+
+.lessons-list-table a:hover {
+    text-decoration: underline;
+}
+
+.no-lessons-message {
+    margin: 25px;
+    padding: 15px;
+    background: #f8f9fa;
+    border-radius: 6px;
+    border: 1px solid #e9ecef;
+}
+
+.lesson-detail-container h2 {
+    margin-bottom: 16px;
+    font-size: 24px;
+    color: #212529;
+}
+
+.lesson-detail-container p {
+    margin-bottom: 12px;
+    font-size: 16px;
+    line-height: 1.5;
+}
+
+.video-container {
+    margin: 20px 0;
+    background: #000;
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.video-container video {
+    width: 100%;
+    display: block;
+}
+
+@media (max-width: 768px) {
+    .lessons-list-table,
+    .lessons-list-table thead,
+    .lessons-list-table tbody,
+    .lessons-list-table th,
+    .lessons-list-table td,
+    .lessons-list-table tr {
+        display: block;
+    }
+
+    .lessons-list-table thead tr {
+        position: absolute;
+        top: -9999px;
+        left: -9999px;
+    }
+
+    .lessons-list-table tr {
+        border: 1px solid #ccc;
+        margin-bottom: 10px;
+        padding: 10px;
+    }
+
+    .lessons-list-table td {
+        border: none;
+        position: relative;
+        padding-left: 50%;
+        text-align: right;
+    }
+
+    .lessons-list-table td:before {
+        content: attr(data-label);
+        position: absolute;
+        left: 6px;
+        width: 45%;
+        padding-right: 10px;
+        white-space: nowrap;
+        font-weight: 600;
+    }
+}

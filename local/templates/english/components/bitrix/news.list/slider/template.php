@@ -55,7 +55,7 @@ $this->setFrameMode(true);
                             <div class="teachers-info">
                                 <?=pluralizeYears($arItem['PROPERTIES']['WORK_EXP']['VALUE'])?> опыта
                             </div>
-                            <button class="btn">Вводный урок</button>
+                            <button class="btn" onclick="window.location.href='<?=$arItem['DETAIL_PAGE_URL']?>'">Вводный урок</button>
                         </div>
                     <? } ?>
                 </div>

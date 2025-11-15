@@ -346,5 +346,6 @@ $APPLICATION->IncludeComponent(
     )
 ); ?>
 <?
+//    <video src="/bitrix/tools/xillix.videoconf/recording_proxy.php?id=17" controls></video>
 require($_SERVER['DOCUMENT_ROOT'] . '/bitrix/footer.php');
 ?>

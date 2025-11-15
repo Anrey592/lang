@@ -122,12 +122,7 @@ class UserManager
                     ]);
                 }
             } catch (\Exception $e) {
-//                \CEventLog::Add([
-//                    'SEVERITY' => 'ERROR',
-//                    'AUDIT_TYPE_ID' => 'TRUECONF_USER_CREATE',
-//                    'MODULE_ID' => 'xillix.videoconf',
-//                    'DESCRIPTION' => 'Ошибка создания пользователя в TrueConf: ' . $e->getMessage()
-//                ]);
+                AddMessage2Log('Ошибка создания пользователя в TrueConf: ', $e->getMessage());
             }
         }
 

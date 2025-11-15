@@ -52,7 +52,7 @@ class NotificationManager
         $studentMessage .= "\n📍 Не забудьте подготовиться к уроку!";
 
         // Текст уведомления для преподавателя
-        $teacherMessage = "🎓 Новый ученик записался на урок!\n\n";
+        $teacherMessage = "🎓 Новая запись на урок!\n\n";
         $teacherMessage .= "👤 Ученик: " . self::getUserFullName($student) . "\n";
         $teacherMessage .= "📅 Дата: " . $teacherDateTime['date'] . "\n";
         $teacherMessage .= "⏰ Время: " . $teacherDateTime['time'] . "\n";

@@ -428,6 +428,9 @@ if (typeof BX !== 'undefined') {
                     document.getElementById('teacherContainer').textContent = 'Преподаватель';
                 });
 
+                const lessonLinkRow = document.getElementById('lessonLinkRow');
+                lessonLinkRow.style.display = 'flex';
+
                 document.getElementById('studentLessonModal').style.display = 'block';
             },
 
@@ -450,6 +453,16 @@ if (typeof BX !== 'undefined') {
                 }).catch(error => {
                     document.getElementById('teacherContainer').textContent = 'Преподаватель';
                 });
+
+                const lessonLinkRow = document.getElementById('lessonLinkRow');
+                const lessonLinkEl = document.getElementById('lessonLink');
+
+                if (slot.UF_SCHEDULED_LESSON) {
+                    lessonLinkEl.href = slot.UF_SCHEDULED_LESSON;
+                    lessonLinkRow.style.display = 'block';
+                } else {
+                    lessonLinkRow.style.display = 'none';
+                }
 
                 document.getElementById('studentLessonModal').style.display = 'block';
             },

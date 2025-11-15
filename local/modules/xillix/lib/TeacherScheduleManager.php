@@ -2,6 +2,7 @@
 
 namespace Xillix;
 
+use Bitrix\Main\Loader;
 use Bitrix\Main\Localization\Loc;
 use Bitrix\Main\Type\DateTime;
 use Bitrix\Main\UserTable;
@@ -394,6 +395,8 @@ class TeacherScheduleManager
             ]);
 
             if ($result->isSuccess()) {
+                self::addStudentToTrueConfConference($slotId, $studentId);
+
                 // Отправляем уведомления в Telegram
                 self::sendBookingNotifications($slotId, $slot, $studentId);
                 return true;
@@ -674,7 +677,7 @@ class TeacherScheduleManager
         $statusId = self::getStatusIdByXmlId('free');
 
         try {
-            return $entity::add([
+            $result = $entity::add([
                 'UF_TEACHER_ID' => (int)$teacherId,
                 'UF_DATE' => $dateFormatted,
                 'UF_START_TIME' => $startDateTime,
@@ -683,9 +686,174 @@ class TeacherScheduleManager
                 'UF_STATUS' => $statusId,
                 'UF_TIMEZONE' => $timezone
             ]);
+
+            if ($result->isSuccess()) {
+                $slotId = $result->getId();
+                $slotData = $entity::getById($slotId)->fetch();
+                if ($slotData) {
+                    self::createTrueConfConferenceForSlot($slotId, $slotData);
+                }
+                return $result;
+            }
+
+            return $result;
         } catch (\Exception $e) {
             error_log('Xillix Add Schedule Error: ' . $e->getMessage());
             return false;
+        }
+    }
+
+    /**
+     * Создаёт конференцию в TrueConf за 10 минут до UF_START_TIME на 2 часа
+     * и сохраняет ссылку в UF_SCHEDULED_LESSON
+     */
+    public static function createTrueConfConferenceForSlot(int $slotId, array $slotData)
+    {
+        if (!Loader::includeModule('xillix.videoconf')) {
+            throw new \Exception('Module xillix.videoconf not installed');
+        }
+
+        try {
+            $teacherId = (int)($slotData['UF_TEACHER_ID'] ?? 0);
+            if (!$teacherId) {
+                throw new \Exception('UF_TEACHER_ID не указан');
+            }
+
+            // Получаем логин TrueConf преподавателя
+            $teacherUser = UserTable::getList(
+                [
+                    'filter' => [
+                        'ID' => $teacherId
+                    ],
+                    'select' => [
+                        'ID',
+                        'UF_TRUECONF_LOGIN'
+                    ]
+                ]
+            )->fetch();
+            if (!$teacherUser || empty($teacherUser['UF_TRUECONF_LOGIN'])) {
+                throw new \Exception('У преподавателя ID=' . $teacherId . ' не заполнено UF_TRUECONF_LOGIN');
+            }
+            $ownerLogin = $teacherUser['UF_TRUECONF_LOGIN'];
+
+            // Разбираем UF_START_TIME: "d.m.Y H:i:s"
+            $startTime = \DateTime::createFromFormat('d.m.Y H:i:s', $slotData['UF_START_TIME'], new \DateTimeZone($slotData['UF_TIMEZONE']));
+            if (!$startTime) {
+                throw new \Exception('Неверный формат UF_START_TIME: ' . $slotData['UF_START_TIME']);
+            }
+
+            // Конференция начинается за 10 минут до урока
+            $confStart = clone $startTime;
+//            $confStart->modify('-10 minutes');
+
+            // Продолжительность — 1.20
+            $duration = 4800;
+
+            // Получаем Unix-время начала в часовом поясе записи
+            $startTimestamp = $confStart->getTimestamp();
+
+            $tc = new \Xillix\Videoconf\TrueConfManager();
+            $topic = 'Урок ' . $startTime->format('d.m.Y');
+
+            $response = $tc->createScheduledConference(
+                $topic,
+                $startTimestamp,
+                $duration,
+                $ownerLogin,
+                $slotData['UF_TIMEZONE'],
+            );
+
+            if (isset($response['conference']['webclient_url'])) {
+                $entity = self::getEntity();
+                if ($entity) {
+                    $entity::update($slotId, [
+                        'UF_SCHEDULED_LESSON' => $response['conference']['url']
+                    ]);
+                }
+            }
+        } catch (\Exception $e) {
+//            \CEventLog::Add([
+//                'SEVERITY' => 'WARNING',
+//                'AUDIT_TYPE_ID' => 'TRUECONF_CONF_CREATE',
+//                'MODULE_ID' => 'xillix',
+//                'DESCRIPTION' => 'Ошибка создания конференции для слота ' . $slotId . ': ' . $e->getMessage()
+//            ]);
+        }
+    }
+
+    /**
+     * Добавляет студента в конференцию через редактирование (PUT)
+     */
+    protected static function addStudentToTrueConfConference(int $slotId, int $studentId)
+    {
+        if (!\Bitrix\Main\Loader::includeModule('xillix.videoconf')) {
+            return;
+        }
+
+        try {
+            $entity = self::getEntity();
+            $slot = $entity::getById($slotId)->fetch();
+
+            if (!$slot || empty($slot['UF_SCHEDULED_LESSON'])) {
+                return;
+            }
+
+            // Извлекаем ID конференции
+            $url = $slot['UF_SCHEDULED_LESSON'];
+            if (!preg_match('#[/](?:webrtc|c)/([0-9]+)#', $url, $matches)) {
+                return;
+            }
+            $confId = $matches[1];
+
+            // Получаем логин студента
+            $studentUser = \Bitrix\Main\UserTable::getList([
+                'filter' => ['ID' => $studentId],
+                'select' => ['UF_TRUECONF_LOGIN']
+            ])->fetch();
+
+            if (!$studentUser || empty($studentUser['UF_TRUECONF_LOGIN'])) {
+                return;
+            }
+            $studentLogin = $studentUser['UF_TRUECONF_LOGIN'];
+
+            // Получаем текущие данные конференции
+            $tc = new \Xillix\Videoconf\TrueConfManager();
+            $confData = $tc->getConference($confId);
+            $current = $confData['conference'];
+
+            // Формируем invitations
+            $invitations = $current['invitations'] ?? [];
+            $exists = false;
+            foreach ($invitations as $inv) {
+                if ($inv['id'] === $studentLogin) {
+                    $exists = true;
+                    break;
+                }
+            }
+            if (!$exists) {
+                $invitations[] = ['id' => $studentLogin];
+            }
+
+            // Обновляем конференцию
+            $tc->editConference($confId, [
+                'topic' => $current['topic'],
+                'type' => $current['type'],
+                'recording' => $current['recording'],
+                'max_participants' => $current['max_participants'] ?? 20,
+                'schedule' => $current['schedule'],
+                'owner' => $current['owner'],
+                'invitations' => $invitations,
+                'allow_guests' => $current['allow_guests'] ?? false,
+                'auto_invite' => $current['auto_invite'] ?? false
+            ]);
+
+        } catch (\Exception $e) {
+//            \CEventLog::Add([
+//                'SEVERITY' => 'WARNING',
+//                'AUDIT_TYPE_ID' => 'TRUECONF_INVITE',
+//                'MODULE_ID' => 'xillix',
+//                'DESCRIPTION' => 'Ошибка добавления студента ID=' . $studentId . ' в конференцию ' . $confId . ': ' . $e->getMessage()
+//            ]);
         }
     }
 

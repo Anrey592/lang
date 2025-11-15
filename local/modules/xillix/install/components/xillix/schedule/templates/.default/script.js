@@ -788,6 +788,18 @@
 
             document.getElementById('lessonStatus').textContent = statusDisplay;
 
+            const lessonLinkRow = document.getElementById('lessonLinkRow');
+            const lessonLinkEl = document.getElementById('lessonLink');
+
+            if (slotData.UF_SCHEDULED_LESSON) {
+                lessonLinkEl.href = slotData.UF_SCHEDULED_LESSON;
+                lessonLinkRow.style.display = 'flex';
+            } else {
+                lessonLinkRow.style.display = 'none';
+            }
+
+            document.getElementById('studentLessonModal').style.display = 'block';
+
             // Информация о человеке (ученик или преподаватель)
             const personContainer = document.getElementById('personContainer');
             if (this.isStudentMode) {
@@ -875,7 +887,7 @@
         loadMultipleStudentsInfo: function (studentIds) {
             return new Promise((resolve) => {
                 const promises = studentIds.map(studentId =>
-                    this.loadStudentInfo(studentId).then(name => ({ id: studentId, name: name }))
+                    this.loadStudentInfo(studentId).then(name => ({id: studentId, name: name}))
                 );
                 Promise.all(promises).then(students => {
                     resolve(students);

@@ -89,3 +89,46 @@ while ($arField = $rsData->Fetch()) {
     $arComponentParameters['PARAMETERS']['READONLY_FIELDS']['VALUES'][$arField['FIELD_NAME']] =
         '[UF] ' . ($arField['EDIT_FORM_LABEL'] ?: $arField['FIELD_NAME']);
 }
+
+CModule::IncludeModule("iblock");
+$iblockValues = [];
+$rsIBlocks = \CIBlock::GetList([], ['ACTIVE' => 'Y']);
+while ($arIBlock = $rsIBlocks->Fetch()) {
+    $iblockValues[$arIBlock['ID']] = '[' . $arIBlock['ID'] . '] ' . $arIBlock['NAME'];
+}
+
+// Получаем список свойств для выбранного инфоблока (динамически не получится в параметрах, поэтому просто текст)
+$arComponentParameters['PARAMETERS']['IBLOCK_ID'] = [
+    'PARENT' => 'BASE',
+    'NAME' => 'ID инфоблока профиля',
+    'TYPE' => 'LIST',
+    'VALUES' => $iblockValues,
+    'REFRESH' => 'Y'
+];
+
+$arComponentParameters['PARAMETERS']['ELEMENT_FIELDS'] = [
+    'PARENT' => 'BASE',
+    'NAME' => 'Поля элемента инфоблока',
+    'TYPE' => 'LIST',
+    'MULTIPLE' => 'Y',
+    'VALUES' => [
+        'NAME' => 'Название',
+        'ACTIVE_FROM' => 'Дата начала',
+        'ACTIVE_TO' => 'Дата окончания',
+        'PREVIEW_TEXT' => 'Краткий текст',
+        'DETAIL_TEXT' => 'Детальный текст',
+        'SORT' => 'Сортировка',
+        'CODE' => 'Символьный код'
+    ],
+    'DEFAULT' => [],
+    'ADDITIONAL_VALUES' => 'Y'
+];
+
+$arComponentParameters['PARAMETERS']['ELEMENT_PROPERTIES'] = [
+    'PARENT' => 'BASE',
+    'NAME' => 'Свойства элемента инфоблока',
+    'TYPE' => 'STRING',
+    'MULTIPLE' => 'N',
+    'DEFAULT' => '',
+    'NOTE' => 'Укажите через запятую: PHONE,SKYPE,DESCRIPTION'
+];

@@ -455,7 +455,6 @@ class XillixScheduleComponent extends CBitrixComponent implements Controllerable
                 'teacherUrl' => $teacherElement['DETAIL_PAGE_URL']
             ];
         } else {
-            // Если элемент не найден, возвращаем только имя
             return [
                 'success' => true,
                 'teacherName' => $userName,

@@ -154,13 +154,17 @@ $this->addExternalJS($this->GetFolder() . '/script.js');
                 <span id="lessonTime"></span>
             </div>
             <div class="detail-row">
+                <strong>Статус:</strong>
+                <span id="lessonStatus"></span>
+            </div>
+            <div class="detail-row" id="lessonLinkRow" style="display: none;">
+                <strong>Ссылка на урок:</strong>
+                <a href="#" id="lessonLink" target="_blank" rel="noopener">Перейти к уроку</a>
+            </div>
+            <div class="detail-row">
                 <strong><?= $arResult['IS_STUDENT_MODE'] ? 'Преподаватель' : 'Ученик' ?>:</strong>
                 <span id="personContainer">
                 </span>
-            </div>
-            <div class="detail-row">
-                <strong>Статус:</strong>
-                <span id="lessonStatus"></span>
             </div>
             <?php if ($arResult['IS_TEACHER_MODE']): ?>
                 <div class="detail-row" id="timezoneInfo" style="display: none;">

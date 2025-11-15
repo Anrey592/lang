@@ -115,6 +115,10 @@ $teacherName = $arParams['TEACHER_NAME'] ?? 'Преподаватель';
                 <strong>Статус:</strong>
                 <span id="lessonStatus"></span>
             </div>
+            <div class="detail-row" id="lessonLinkRow" style="display: none;">
+                <strong>Ссылка на урок:</strong>
+                <a href="/personal/raspisanie/" id="lessonLink" target="_blank" rel="noopener">Перейти в личный кабинет</a>
+            </div>
         </div>
 
         <div class="form-actions">

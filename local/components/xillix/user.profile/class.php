@@ -47,8 +47,65 @@ class UserProfileComponent extends CBitrixComponent
         $this->prepareFields();
         $this->processForm();
         $this->prepareUserData();
+        if (!empty($this->arParams['IBLOCK_ID'])) {
+            $this->loadIblockElementData();
+        }
 
         $this->includeComponentTemplate();
+    }
+
+    private function loadIblockElementData()
+    {
+        $iblockId = (int)$this->arParams['IBLOCK_ID'];
+        if ($iblockId <= 0) return;
+
+        global $USER;
+        $userId = $USER->GetID();
+
+        // Ищем элемент по свойству PROFILE_ID = USER_ID
+        $filter = [
+            'IBLOCK_ID' => $iblockId,
+            'ACTIVE' => 'Y',
+            'PROPERTY_PROFILE_ID' => $userId
+        ];
+
+        $select = array_filter($this->arParams['ELEMENT_FIELDS']);
+
+        $rsElement = CIBlockElement::GetList(
+            [],
+            $filter,
+            false,
+            ['nTopCount' => 1],
+        );
+
+        if ($element = $rsElement->GetNextElement()) {
+            $arFields = $element->GetFields();
+            $properties = $element->GetProperties();
+            if (!empty($select)) {
+                foreach ($arFields as $k => $field) {
+                    if (in_array($k, $select)) {
+                        if($k == 'PREVIEW_TEXT') {
+                            $this->arResult['IBLOCK_ELEMENT'][$k]['NAME'] = 'Описание';
+                            $this->arResult['IBLOCK_ELEMENT'][$k]['VALUE'] = $field;
+                            $this->arResult['IBLOCK_ELEMENT'][$k]['TYPE'] = 'text';
+                        }
+                    }
+                }
+            }
+
+            foreach ($properties as $prop) {
+                $this->arResult['IBLOCK_ELEMENT']['PROPERTIES'][$prop['CODE']]['NAME'] = $prop['NAME'];
+                $this->arResult['IBLOCK_ELEMENT']['PROPERTIES'][$prop['CODE']]['VALUE'] = $prop['VALUE'];
+            }
+
+            // Подготавливаем список полей для отображения
+            $this->arResult['IBLOCK_FIELDS_TO_SHOW'] = $this->arParams['ELEMENT_FIELDS'] ?? [];
+            $this->arResult['IBLOCK_PROPS_TO_SHOW'] = !empty($this->arParams['ELEMENT_PROPERTIES'])
+                ? explode(',', $this->arParams['ELEMENT_PROPERTIES'])
+                : [];
+        } else {
+            $this->arResult['IBLOCK_ELEMENT'] = null;
+        }
     }
 
     private function prepareFields()
