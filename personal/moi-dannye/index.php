@@ -99,6 +99,7 @@ if (!$USER->IsAuthorized()) {
 			1 => "LAST_NAME",
 			2 => "PERSONAL_PHONE",
 			3 => "PERSONAL_BIRTHDAY",
+			4 => "PERSONAL_PHOTO",
 		],
 		"UF_FIELDS" => [
 			0 => "UF_TRUECONF_LOGIN",

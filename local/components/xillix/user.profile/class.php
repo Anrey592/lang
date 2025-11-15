@@ -96,6 +96,7 @@ class UserProfileComponent extends CBitrixComponent
             foreach ($properties as $prop) {
                 $this->arResult['IBLOCK_ELEMENT']['PROPERTIES'][$prop['CODE']]['NAME'] = $prop['NAME'];
                 $this->arResult['IBLOCK_ELEMENT']['PROPERTIES'][$prop['CODE']]['VALUE'] = $prop['VALUE'];
+                $this->arResult['IBLOCK_ELEMENT']['PROPERTIES'][$prop['CODE']]['PROPERTY_TYPE'] = $prop['PROPERTY_TYPE'];
             }
 
             // Подготавливаем список полей для отображения
