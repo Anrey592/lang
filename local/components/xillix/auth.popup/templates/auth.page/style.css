@@ -73,7 +73,6 @@
     padding: 15px;
     background: var(--color-bg1);
     border-radius: 8px;
-    border: 1px solid #e0e0e0;
 }
 
 .auth-page .policy-checkbox {

@@ -62,6 +62,11 @@
                             id="telegramRegisterBtnPage" disabled>
                         Перейти в Telegram
                     </button>
+
+                    <div class="auth-qr-tg hidden">
+                        <p>или</p>
+                        <img src="<?=SITE_TEMPLATE_PATH?>/img/qr-tg.svg" alt="">
+                    </div>
                 </div>
             </div>
         </form>

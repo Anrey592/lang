@@ -9,6 +9,7 @@ class AuthPage {
         this.policyInputs = document.querySelectorAll('#policiesContainerPage .policy-input');
         this.passwordToggle = document.getElementById('page_password_toggle_page');
         this.passwordInput = document.getElementById('page_password_page');
+        this.qrTg = document.querySelectorAll('.auth-qr-tg');
 
         this.passwordToggle.addEventListener('click', this.togglePasswordVisibility.bind(this));
 
@@ -41,6 +42,13 @@ class AuthPage {
     updateTelegramButton() {
         const allChecked = Array.from(this.policyInputs).every(input => input.checked);
         this.telegramRegisterBtn.disabled = !allChecked;
+
+        this.qrTg.forEach(item => {
+            item.classList.add('hidden');
+            if (allChecked && window.screen.width > 1100) {
+                item.classList.remove('hidden');
+            }
+        });
     }
 
     showPolicies() {

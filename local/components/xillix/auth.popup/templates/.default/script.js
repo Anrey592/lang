@@ -9,6 +9,7 @@ class AuthPopup {
         this.policyInputs = document.querySelectorAll('.policy-input');
         this.passwordToggle = document.getElementById('popup_password_toggle');
         this.passwordInput = document.getElementById('popup_password');
+        this.qrTg = document.querySelectorAll('.auth-qr-tg');
 
         this.passwordToggle.addEventListener('click', this.togglePasswordVisibility.bind(this));
 
@@ -48,17 +49,19 @@ class AuthPopup {
             input.addEventListener('change', this.updateTelegramButton.bind(this));
         });
 
-        // Регистрация через Telegram
-        // this.registerLink.addEventListener('click', (e) => {
-        //     // e.preventDefault();
-        //     this.openTelegramBot();
-        // });
         this.telegramRegisterBtn.addEventListener('click', this.openTelegramBot.bind(this));
     }
 
     updateTelegramButton() {
         const allChecked = Array.from(this.policyInputs).every(input => input.checked);
         this.telegramRegisterBtn.disabled = !allChecked;
+
+        this.qrTg.forEach(item => {
+            item.classList.add('hidden');
+            if (allChecked && window.screen.width > 1100) {
+                item.classList.remove('hidden');
+            }
+        });
     }
 
     open() {

@@ -2031,8 +2031,8 @@ section.personal {
 /* Стили для попапа авторизации */
 .auth-popup .modal-content {
     background-color: white;
-    margin: 5% auto;
-    padding: 25px;
+    margin: 1% auto;
+    padding: 20px;
     border-radius: 8px;
     width: 90%;
     max-width: 400px;
@@ -2055,14 +2055,14 @@ section.personal {
 }
 
 .auth-popup h3 {
-    margin: 0 0 20px 0;
+    margin: 0 0 10px 0;
     color: #2c3e50;
     font-size: 20px;
     text-align: center;
 }
 
 .auth-popup .form-group {
-    margin-bottom: 20px;
+    margin-bottom: 15px;
 }
 
 .auth-popup .form-group label {
@@ -2090,7 +2090,7 @@ section.personal {
 
 .auth-popup .btn {
     width: 100%;
-    margin-bottom: 20px;
+    margin-bottom: 10px;
 }
 
 .auth-popup-links {
@@ -2528,4 +2528,25 @@ section.personal {
 
 .dark-theme .what-offer h2 {
     color: var(--color-white);
+}
+
+.auth-qr-tg {
+    max-width: 180px;
+    margin: 0 auto;
+}
+
+.auth-qr-tg p {
+    margin: 0;
+}
+
+.auth-qr-tg img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.auth-popup-links .btn {
+    margin-bottom: 0;
 }
